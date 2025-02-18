@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<flashcards>
+    <card>
+        <question>What is the capital of France?</question>
+        <answer>Paris</answer>
+    </card>
+    <card>
+        <question>Who wrote '1984'?</question>
+        <answer>George Orwell</answer>
+    </card>
+    <card>
+        <question>In what country did the first Starbucks open outside of North America? </question>
+        <answer>Japan</answer>
+    </card>
+    <card>
+        <question>What does CODA stand for? </question>
+        <answer>Child of Deaf Adults</answer>
+    </card>
+    <card>
+        <question>In a website browser address bar, what does "www" stand for? </question>
+        <answer>World Wide Web</answer>
+    </card>
+    <card>
+        <question>What is the tiny piece at the end of a shoelace called?</question>
+        <answer>An aglet</answer>
+    </card>
+    <card>
+        <question>Which company's slogan is "You're in good hands?"</question>
+        <answer>Allstate</answer>
+    </card>
+    <card>
+        <question>Who was the first televised President?</question>
+        <answer>Franklin D. Roosevelt</answer>
+    </card>
+    <card>
+        <question>Pocahontas was baptized and given what English name?</question>
+        <answer>Rebecca</answer>
+    </card>
+    <card>
+        <question>Originally, Amazon only sold what kind of product?</question>
+        <answer>Books</answer>
+    </card>
+    <card>
+        <question>Who painted the Mona Lisa?</question>
+        <answer>Leonardo da Vinci</answer>
+    </card>
+    <card>
+        <question>Who was the first woman to win a Nobel Prize?</question>
+        <answer>Marie Curie (1903)</answer>
+    </card>
+    <card>
+        <question>In what year was the Internet opened to the public?</question>
+        <answer>1993</answer>
+    </card>
+    <card>
+        <question>Who is often credited with creating the world's first car?</question>
+        <answer>Karl Benz</answer>
+    </card>
+    <card>
+        <question>Who was the first woman pilot to fly solo across the Atlantic?</question>
+        <answer>Amelia Earhart</answer>
+    </card>
+    <card>
+        <question>When did Facebook first launch?</question>
+        <answer>2004</answer>
+    </card>
+    <card>
+        <question>In the Catholic Church, the Bishop of Rome is a title more commonly known as what?</question>
+        <answer>Pope</answer>
+    </card>
+</flashcards>
