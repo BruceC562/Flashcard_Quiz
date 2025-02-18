@@ -12,12 +12,15 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,6 +34,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -89,9 +93,20 @@ fun loadFlashcards(xmlFile: Int, context: Context): List<Flashcard> {
 @Composable
 fun FlashcardQuiz(modifier: Modifier = Modifier) {
     val flashcards = loadFlashcards(R.xml.flashcards, LocalContext.current)
-    LazyRow(modifier = modifier) {
+
+    LazyRow(
+        modifier = modifier.fillMaxSize(),
+        horizontalArrangement = Arrangement.Center
+    ) {
         items(flashcards) { flashcard ->
-            CreateFlashcard(flashcard)
+            Box(
+                modifier = Modifier
+                    .fillParentMaxSize()
+                    .padding(16.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                CreateFlashcard(flashcard)
+            }
         }
     }
 }
@@ -116,7 +131,7 @@ enum class FlashcardState (val angle: Float) {
 }
 
 @Composable
-fun CreateFlashcard(flashcard: Flashcard, ) {
+fun CreateFlashcard(flashcard: Flashcard) {
     var cardFace by remember { mutableStateOf(FlashcardState.Front) }
 
     FlipCard(
@@ -131,32 +146,37 @@ fun CreateFlashcard(flashcard: Flashcard, ) {
 fun FlipCard(
     cardFace: FlashcardState,
     onClick: (FlashcardState) -> Unit,
-    back: @Composable () -> Unit = {},
-    front: @Composable () -> Unit = {}
+    back: @Composable () -> Unit,
+    front: @Composable () -> Unit
 ) {
     val rotation = animateFloatAsState(
         targetValue = cardFace.angle,
-        animationSpec = tween(
-            durationMillis = 400,
-            easing = FastOutSlowInEasing,
-        )
+        animationSpec = tween(durationMillis = 400, easing = FastOutSlowInEasing)
     )
-    Card(
-        onClick = { onClick(cardFace) },
+
+    Box(
         modifier = Modifier
-            .graphicsLayer {
-                rotationX = rotation.value
-            }
-            .fillMaxSize()
-            .clip(RoundedCornerShape(10.dp)),
+            .fillMaxSize() // Ensures uniform size
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
     ) {
-        Box(
-            modifier = Modifier.fillMaxSize()
+        Card(
+            onClick = { onClick(cardFace) },
+            modifier = Modifier
+                .fillMaxWidth(0.9f) // Ensure same width
+                .fillMaxHeight(0.8f) // Ensure same height
+                .graphicsLayer { rotationX = rotation.value }
+                .clip(RoundedCornerShape(10.dp)),
         ) {
-            if (rotation.value <= 90f) {
-                front()
-            } else {
-                back()
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                if (rotation.value <= 90f) {
+                    front()
+                } else {
+                    back()
+                }
             }
         }
     }
@@ -164,13 +184,18 @@ fun FlipCard(
 
 @Composable
 fun BuildFace(text: String) {
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+    Box(
+        modifier = Modifier
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center
     ) {
         Text(
             text = text,
-            fontSize = 30.sp
+            fontSize = 30.sp,
+            textAlign = TextAlign.Center,
+            softWrap = true,
+            maxLines = Int.MAX_VALUE,
+            modifier = Modifier.fillMaxWidth() // Ensures consistent text area size
         )
     }
 }
