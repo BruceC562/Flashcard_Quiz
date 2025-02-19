@@ -11,7 +11,6 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,10 +19,10 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.flashcard_quiz.ui.theme.Flashcard_QuizTheme
+import kotlinx.coroutines.delay
 import org.xmlpull.v1.XmlPullParser
 
 data class Flashcard(val question: String, val answer: String)
@@ -93,16 +93,24 @@ fun loadFlashcards(xmlFile: Int, context: Context): List<Flashcard> {
 @Composable
 fun FlashcardQuiz(modifier: Modifier = Modifier) {
     val flashcards = loadFlashcards(R.xml.flashcards, LocalContext.current)
+    var shuffledFlashcards by remember { mutableStateOf(flashcards.shuffled()) }
+    //Shuffles the flashcards every 15 seconds
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(15000)
+            println("Shuffling flashcards...")
+            shuffledFlashcards = shuffledFlashcards.shuffled()
+        }
+    }
 
     LazyRow(
         modifier = modifier.fillMaxSize(),
         horizontalArrangement = Arrangement.Center
     ) {
-        items(flashcards) { flashcard ->
+        items(shuffledFlashcards) { flashcard ->
             Box(
                 modifier = Modifier
-                    .fillParentMaxSize()
-                    .padding(16.dp),
+                    .fillParentMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
                 CreateFlashcard(flashcard)
@@ -138,7 +146,7 @@ fun CreateFlashcard(flashcard: Flashcard) {
         cardFace = cardFace,
         onClick = { cardFace = cardFace.next },
         front = { BuildFace(flashcard.question) },
-        back = { BuildFace(flashcard.answer) }
+        back = { BuildFace(flashcard.answer, flipped = true) }
     )
 }
 
@@ -151,7 +159,9 @@ fun FlipCard(
 ) {
     val rotation = animateFloatAsState(
         targetValue = cardFace.angle,
-        animationSpec = tween(durationMillis = 400, easing = FastOutSlowInEasing)
+        animationSpec = tween(
+            durationMillis = 400,
+            easing = FastOutSlowInEasing)
     )
 
     Box(
@@ -163,9 +173,12 @@ fun FlipCard(
         Card(
             onClick = { onClick(cardFace) },
             modifier = Modifier
-                .fillMaxWidth(0.9f) // Ensure same width
-                .fillMaxHeight(0.8f) // Ensure same height
-                .graphicsLayer { rotationX = rotation.value }
+                .fillMaxWidth(0.95f) // Ensure same width
+                .fillMaxHeight(1f) // Ensure same height
+                .graphicsLayer {
+                    rotationX = rotation.value
+                    cameraDistance = 12f * density
+                }
                 .clip(RoundedCornerShape(10.dp)),
         ) {
             Box(
@@ -183,27 +196,42 @@ fun FlipCard(
 }
 
 @Composable
-fun BuildFace(text: String) {
+fun BuildFace(text: String, flipped: Boolean = false) {
     Box(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .graphicsLayer {
+                rotationX = if (flipped) 180f else 0f // Flips the text if an answer is showing
+            },
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = text,
-            fontSize = 30.sp,
+            fontSize = 35.sp,
             textAlign = TextAlign.Center,
             softWrap = true,
+            lineHeight = 40.sp,
             maxLines = Int.MAX_VALUE,
-            modifier = Modifier.fillMaxWidth() // Ensures consistent text area size
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 20.dp, end = 20.dp, top = 5.dp, bottom = 5.dp) // Ensures consistent text area size
         )
     }
 }
 
-@Preview(showBackground = true)
+@Preview(
+    showSystemUi = true,
+    device = "spec:width=411dp,height=891dp,dpi=420,isRound=false,chinSize=0dp,orientation=landscape"
+)
 @Composable
 fun FlashcardPreview() {
     Flashcard_QuizTheme {
-        FlashcardQuiz()
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            containerColor = Color.LightGray) { innerPadding ->
+            FlashcardQuiz(
+                modifier = Modifier.padding(innerPadding)
+            )
+        }
     }
 }

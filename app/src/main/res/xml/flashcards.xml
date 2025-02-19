@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <flashcards>
     <card>
+        <question>In a website browser address bar, what does "www" stand for? </question>
+        <answer>World Wide Web</answer>
+    </card>
+    <card>
         <question>What is the capital of France?</question>
         <answer>Paris</answer>
     </card>
@@ -15,10 +19,6 @@
     <card>
         <question>What does CODA stand for? </question>
         <answer>Child of Deaf Adults</answer>
-    </card>
-    <card>
-        <question>In a website browser address bar, what does "www" stand for? </question>
-        <answer>World Wide Web</answer>
     </card>
     <card>
         <question>What is the tiny piece at the end of a shoelace called?</question>
